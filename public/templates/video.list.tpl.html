@@ -1,0 +1,4 @@
+<div class="video-list-item" ng-repeat="video in videos">
+    <img class="large-4 columns" title="{{video.snippet.description}}" ng-src="{{video.snippet.thumbnails.default.url}}">
+    <span class="large-8 columns">{{video.snippet.title}}</span>
+</div>

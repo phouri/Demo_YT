@@ -1,0 +1,7 @@
+<div class="lazy-load-list">
+    <div ng-repeat="item in list" ng-transclude>
+    </div>
+    <div ng-show="hasMore() && hasSearchTerm">
+        <img src="../images/spinner.gif">
+    </div>
+</div>

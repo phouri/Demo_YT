@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="myDemoApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.1.1/css/foundation.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <style href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.1.1/css/foundation.css"></style>
+</head>
+<body>
+<div class="mast-head">
+    <home></home>
+    <search-bar></search-bar>
+</div>
+<div class="content">
+    <div class="small-3 large-2 columns list">
+        <video-list></video-list>
+    </div>
+    <div ng-view class="small-9 large-10 columns player">
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.js"></script>
+<script src="javascripts/demo_app_all.js"></script>
+<script src="javascripts/services.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+<div class="search-container">
+    <img src="../images/search-icon.png" class="search-icon">
+    <div class="search">
+        <input ng-focus="unHide($event)" ng-click="unHide($event)" type="search" placeholder="Search... " ng-model="ytSearch">
+    </div>
+    <lazy-load-list ng-hide="hideSearchDropDown" list="list" has-more="hasMore" get-more="load" max="150">
+        <div class="yt-results">
+            <img class="yt-img" title="{{item.snippet.description}}" ng-src="{{item.snippet.thumbnails.default.url}}">
+            <span class="yt-video-title">{{item.snippet.title}}</span>
+            <input type="button" class="yt-add-btn" value="Add" ng-click="addItem(item, $event)">
+        </div>
+    </lazy-load-list>
+</div>

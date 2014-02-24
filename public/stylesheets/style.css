@@ -1,0 +1,84 @@
+.mast-head {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    top: 0;
+    border-bottom: 1px solid #ccc;
+    background-color: white;
+    z-index:1;
+    line-height: 50px;
+}
+.content {
+    padding-top: 50px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+.content .list {
+    height: 100%;
+    overflow: auto;
+    border-right: 1px solid #ccc;
+}
+.content .player {
+    height: 100%;
+    overflow: hidden;
+}
+.home {
+    float: right;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 7px;
+    margin-right: 15px;
+}
+.search-container {
+    padding-left: 20px;
+    width: 300px;
+    display: inline-block;
+}
+.search {
+    display: inline-block;
+    width: 200px;
+}
+.search-icon {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+.yt-results {
+    width: 480px;
+    height: 90px;
+    line-height: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.yt-results:hover {
+    background-color: lightgoldenrodyellow;
+}
+.lazy-load-list {
+    margin-top: -15px;
+    max-height: 500px;
+    width: 500px;
+    overflow:auto;
+    background-color: white;
+}
+.yt-video-title {
+    width: 300px;
+    display: inline-block;
+    text-overflow: ellipsis;
+}
+.yt-img {
+    float:left;
+}
+.yt-add-btn {
+    float: right;
+    margin-top: 35px;
+}
+.video-list-item {
+    height: 60px;
+    padding-bottom: 10px;
+    overflow: hidden;
+}
