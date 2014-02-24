@@ -102,3 +102,52 @@
 .saved-list-item:hover {
     background-color: #eeeeee;
 }
+
+.repeat-animation.ng-enter-stagger,
+.repeat-animation.ng-leave-stagger,
+.repeat-animation.ng-move-stagger {
+    /* 200ms will be applied between each sucessive enter operation */
+    -webkit-transition-delay:0.2s;
+    transition-delay:0.2s;
+}
+
+.repeat-animation.ng-enter,
+.repeat-animation.ng-leave,
+.repeat-animation.ng-move {
+    -webkit-transition:0.5s linear all;
+    transition:0.5s linear all;
+}
+
+.repeat-animation.ng-leave.ng-leave-active,
+.repeat-animation.ng-enter,
+.repeat-animation.ng-move {
+    -webkit-transition:0.5s linear all;
+    transition:0.5s linear all;
+    opacity:0;
+}
+
+.repeat-animation.ng-leave,
+.repeat-animation.ng-move.ng-move-active,
+.repeat-animation.ng-enter.ng-enter-active {
+    opacity:1;
+}
+
+/* you can use natural CSS transitions just
+   as you would without using ngAnimate */
+.fade-in {
+    -webkit-transition:0.5s ease opacity;
+    transition:0.5s ease opacity;
+    opacity:1;
+}
+
+.fade-in.ng-hide,
+.fade-in.ng-hide-add-active
+{
+    opacity:0;
+}
+.fade-in.ng-hide-add, .fade-in.ng-hide-remove {
+    /* this needs to be here to make it visible during the animation
+       since the .ng-hide class is already on the element rendering
+       it as hidden. */
+    display:block!important;
+}

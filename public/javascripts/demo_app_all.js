@@ -24,7 +24,7 @@ var apiReady = false;
 function onYouTubeIframeAPIReady() {
     apiReady = true;
 }
-var myDemoAppModule = angular.module('myDemoApp', ['ngRoute','youtube']);
+var myDemoAppModule = angular.module('myDemoApp', ['ngRoute','youtube', 'ngAnimate']);
 myDemoAppModule.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
@@ -124,10 +124,13 @@ myDemoAppModule.directive('stretchToFill', [function () {
     var dir = {};
     dir.restrict = 'A';
     dir.link = function (scope, el) {
-        var $el = $(el);
-        var maxWidth = $el.parent().width();
-        var maxHeight = $el.parent().height();
-        $el.css({height: maxHeight + 'px', width: maxWidth + 'px'});
+        function calcSize() {
+            var maxWidth = el.parent().width();
+            var maxHeight = el.parent().height();
+            el.css({height: maxHeight + 'px', width: maxWidth + 'px'});
+        }
+        calcSize();
+        $(window).bind('resize',calcSize);
     };
     return dir;
 }]);
@@ -205,8 +208,8 @@ myDemoAppModule.directive('savedLists',['LocalStorageService','YTPlayerControlle
             $event.stopPropagation();
         };
         var closeList = function() {
-            console.log('close evt');
             scope.open = false;
+            scope.$apply();
         };
         scope.selectList = function($index,$event) {
             ytController.loadVideoList(scope.savedLists[$index].list, scope.savedLists[$index].name);
@@ -216,8 +219,9 @@ myDemoAppModule.directive('savedLists',['LocalStorageService','YTPlayerControlle
         function getLists() {
             scope.savedLists = localStorageService.getLists();
         }
-        scope.removeList = function($index) {
+        scope.removeList = function($index,$event) {
             localStorageService.removeFromList($index);
+            $event.stopPropagation();
         };
         scope.$on('savedListChanged', getLists);
         $('body').bind('click.savedList',closeList);

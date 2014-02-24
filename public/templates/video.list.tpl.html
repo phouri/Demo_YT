@@ -2,7 +2,7 @@
     <div class="row" ng-show="videos.length > 0">
         <label for="videoName">Name:</label><input id="videoName" ng-model="videoName"> <input ng-show="videoName !== '' && videoName" type="button" value="Save List" ng-click="save()">
     </div>
-    <div class="row display" ng-repeat="video in videos">
+    <div class="row display repeat-animation" ng-repeat="video in videos">
         <div class="row">
             <div class="large-5 columns clickable"><img ng-click="playVideo($index)" title="{{video.snippet.description}}"
                                               ng-src="{{video.snippet.thumbnails.default.url}}">

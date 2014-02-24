@@ -2,7 +2,7 @@
     <div class="row" ng-click="toggleOpen($event)">
         Saved Lists: {{savedLists.length}}
     </div>
-    <div ng-show="open" class="row saved-lists-wrapper">
+    <div ng-show="open && savedLists.length > 0" class="row saved-lists-wrapper fade-in ng-hide-add-active">
         <div class="row saved-list-item" ng-repeat="list in savedLists">
             <div class="row">
                 <div ng-click="selectList($index,$event)" class="large-10 columns clickable">
@@ -14,7 +14,7 @@
                     </ng-pluralize>
                 </div>
                <div class="large-2 columns">
-                   <input type="button" value="X" ng-click="removeList($index)">
+                   <input type="button" value="X" ng-click="removeList($index,$event)">
                </div>
             </div>
         </div>
