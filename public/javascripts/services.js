@@ -60,22 +60,38 @@ ytModule.service('YTPlayerController', ['$location', '$rootScope', function ($lo
     var videoList = [];
     var player;
     var playerReady = false;
-    var curPlayingIdx = 0;
+    var videoListName = '';
+    var curPlayingIdx = 0, selectedIdx = false;
 
-    function loadNext() {
-        if (curPlayingIdx < videoList.length) {
-            player.loadVideoById(videoList[curPlayingIdx].id.videoId);
-            curPlayingIdx++;
+    function loadVideo(idx) {
+        if (idx < videoList.length) {
+            if (!player) {
+                initPlayer();
+                selectedIdx = idx;
+                return;
+            }
+            player.loadVideoById(videoList[idx].id.videoId);
+            curPlayingIdx = idx;
         }
     }
+
+    function loadNext() {
+        if (selectedIdx !== false) {
+            loadVideo(selectedIdx);
+            selectedIdx = false;
+        } else {
+            curPlayingIdx++;
+            loadVideo(curPlayingIdx);
+        }
+    }
+
     function onPlayerStateChange(event) {
         if (event.data === YT.PlayerState.ENDED) {
             loadNext();
         }
     }
     function initPlayer() {
-        if (apiReady) {
-            console.log(document.getElementById('ytIframe'));
+        if (apiReady && !playerReady) {
             player = new YT.Player('ytIframe', {
                 events: {
                     'onReady': onPlayerReady,
@@ -84,16 +100,39 @@ ytModule.service('YTPlayerController', ['$location', '$rootScope', function ($lo
             });
         }
     }
+    $rootScope.$on('$locationChangeSuccess',function() {
+        if ($location.$$path != "/play") {
+            playerReady = false;
+        }
+    });
     function onPlayerReady() {
-        curPlayingIdx = 0;
-        player.loadVideoById(videoList[curPlayingIdx].id.videoId);
+        if (selectedIdx !== false) {
+            loadVideo(selectedIdx);
+            selectedIdx = false;
+        } else {
+            curPlayingIdx = 0;
+            loadVideo(curPlayingIdx);
+        }
         playerReady = true;
-        curPlayingIdx++;
+
     }
-    this.iFrameTplLoaded = function() {
-      initPlayer();
+
+    this.iFrameTplLoaded = function () {
+        initPlayer();
     };
+    function getVideoIdx(video) {
+        for (var i= 0, len= videoList.length; i<len; i++) {
+            if (videoList[i].id.videoId === video.id.videoId) {
+                return i;
+            }
+        }
+        return -1;
+    }
     this.addToQueue = function (video) {
+        var idx = getVideoIdx(video);
+        if (idx !== -1) {
+            return;
+        }
         videoList.push(video);
         if (videoList.length === 1) {
             if ($location.$$path !== '/play') {
@@ -103,19 +142,82 @@ ytModule.service('YTPlayerController', ['$location', '$rootScope', function ($lo
             }
         }
     };
-    this.removeFromQueue = function (id) {
-
+    this.removeFromQueue = function (idx) {
+        if (curPlayingIdx > idx) {
+            curPlayingIdx--;
+        } else {
+            if (curPlayingIdx === idx) {
+                loadNext();
+            }
+        }
+        videoList.splice(idx,1);
     };
-    this.play = function (id) {
-
+    this.play = function (idx, forcePlay) {
+        selectedIdx = idx;
+        if ($location.$$path !== '/play') {
+            $location.path('/play');
+        } else {
+            if (forcePlay || selectedIdx !== curPlayingIdx) {
+                loadNext();
+            } else {
+                selectedIdx = false;
+            }
+        }
     };
-
-    this.playAll = function () {
-
+    this.loadVideoList = function(list, name) {
+        videoListName = name;
+        videoList = list;
+        this.play(0, true);
     };
     this.getList = function () {
-        return videoList;
+        return {list: videoList, name: videoListName};
     };
 
 
+}]);
+
+ytModule.service('LocalStorageService',  ['$rootScope', function ($rootScope) {
+    var listsKey = "all_lists";
+    var allLists = JSON.parse(localStorage.getItem(listsKey)) || [];
+    function broadcastListChanged() {
+        $rootScope.$broadcast('savedListChanged');
+    }
+    function getListIdxByName(name) {
+        for (var i = 0, len = allLists.length; i < len; i++) {
+            if (allLists[i].name === name) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    this.saveList = function (name, list) {
+        var idx = getListIdxByName(name);
+        if (idx !== -1) {
+            allLists[idx].list = list;
+        } else {
+            allLists.push({name: name, list: list});
+        }
+        broadcastListChanged();
+    };
+    this.getList = function (name) {
+        var idx = getListIdxByName(getListIdxByName(name));
+        if (idx !== -1) {
+            return allLists[idx].list;
+        }
+        return [];
+    };
+
+    this.removeFromList = function($index) {
+        allLists.splice($index,1);
+        broadcastListChanged();
+    };
+    this.getLists = function () {
+        return angular.copy(allLists);
+    };
+    function persist() {
+        localStorage.setItem(listsKey, JSON.stringify(allLists));
+    }
+
+    $(window).unload(persist);
 }]);

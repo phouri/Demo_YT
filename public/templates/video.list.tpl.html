@@ -1,4 +1,23 @@
-<div class="video-list-item" ng-repeat="video in videos">
-    <img class="large-4 columns" title="{{video.snippet.description}}" ng-src="{{video.snippet.thumbnails.default.url}}">
-    <span class="large-8 columns">{{video.snippet.title}}</span>
+<div>
+    <div class="row" ng-show="videos.length > 0">
+        <label for="videoName">Name:</label><input id="videoName" ng-model="videoName"> <input ng-show="videoName !== '' && videoName" type="button" value="Save List" ng-click="save()">
+    </div>
+    <div class="row display" ng-repeat="video in videos">
+        <div class="row">
+            <div class="large-5 columns clickable"><img ng-click="playVideo($index)" title="{{video.snippet.description}}"
+                                              ng-src="{{video.snippet.thumbnails.default.url}}">
+            </div>
+            <div class="large-5 columns clickable">
+                <div class="row">
+                    <span ng-click="playVideo($index)">{{video.snippet.title}}</span>
+                </div>
+            </div>
+            <div class="large-2 columns">
+                <div class="row"></div>
+                <div class="row">
+                    <input type="button" value="X" ng-click="remove($index)">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

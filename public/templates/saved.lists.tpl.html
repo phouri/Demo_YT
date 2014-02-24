@@ -1,0 +1,22 @@
+<div>
+    <div class="row" ng-click="toggleOpen($event)">
+        Saved Lists: {{savedLists.length}}
+    </div>
+    <div ng-show="open" class="row saved-lists-wrapper">
+        <div class="row saved-list-item" ng-repeat="list in savedLists">
+            <div class="row">
+                <div ng-click="selectList($index,$event)" class="large-10 columns clickable">
+                    {{list.name}} -
+                    <ng-pluralize count="list.list.length"
+                                  when="{'0': 'No videos',
+                     'one': '1 video',
+                     'other': '{} videos'}">
+                    </ng-pluralize>
+                </div>
+               <div class="large-2 columns">
+                   <input type="button" value="X" ng-click="removeList($index)">
+               </div>
+            </div>
+        </div>
+    </div>
+</div>

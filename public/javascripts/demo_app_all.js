@@ -157,23 +157,73 @@ myDemoAppModule.directive('lazyLoadList',[function() {
                 });
             }
         };
-
         el.bind('scroll',handleScroll);
     };
     return dir;
 }]);
 
-myDemoAppModule.directive('videoList',['YTPlayerController', function(ytController) {
+myDemoAppModule.directive('videoList',['YTPlayerController', 'LocalStorageService', function(ytController, localStorageService) {
     var dir = {};
     dir.replace = true;
     dir.restrict = 'E';
     dir.templateUrl = "../templates/video.list.tpl.html";
     dir.link = function(scope,el) {
-        scope.videos = ytController.getList();
+        scope.playVideo = function($index) {
+            ytController.play($index);
+        };
+        scope.save = function() {
+            localStorageService.saveList(scope.videoName, scope.videos);
+        };
+        scope.remove = function($index) {
+            ytController.removeFromQueue($index);
+        };
+        scope.$watch(function() {
+            return ytController.getList().list;
+        }, function() {
+            var list = ytController.getList();
+            scope.videos = list.list;
+            scope.videoName = list.name;
+        })
     };
     return dir;
 }]);
 
 myDemoAppModule.controller('IFrameController',['YTPlayerController',function(ytController) {
     ytController.iFrameTplLoaded();
+}]);
+
+myDemoAppModule.directive('savedLists',['LocalStorageService','YTPlayerController', function(localStorageService, ytController) {
+    var dir = {};
+    dir.replace = true;
+    dir.restrict = 'E';
+    dir.templateUrl = "../templates/saved.lists.tpl.html";
+    dir.link = function(scope,el) {
+        scope.savedLists = localStorageService.getLists();
+        scope.open = false;
+        scope.toggleOpen = function($event) {
+            scope.open = !scope.open;
+            $event.stopPropagation();
+        };
+        var closeList = function() {
+            console.log('close evt');
+            scope.open = false;
+        };
+        scope.selectList = function($index,$event) {
+            ytController.loadVideoList(scope.savedLists[$index].list, scope.savedLists[$index].name);
+            $event.stopPropagation();
+            closeList();
+        };
+        function getLists() {
+            scope.savedLists = localStorageService.getLists();
+        }
+        scope.removeList = function($index) {
+            localStorageService.removeFromList($index);
+        };
+        scope.$on('savedListChanged', getLists);
+        $('body').bind('click.savedList',closeList);
+        scope.$on('$destroy',function() {
+            $('body').unbind('.savedList')
+        });
+    };
+    return dir;
 }]);
